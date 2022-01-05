@@ -33,7 +33,7 @@ namespace ft
 		{
 			_size = n;
 			_capacity = n;
-			_data = allocator.allocate(n);
+			_data = A.allocate(n);
 		}
 		//template <class InputIterator>
         //vector (InputIterator first, InputIterator last,
@@ -56,9 +56,10 @@ namespace ft
 		public: // Non-member function overloads
 		public: // Template specializations
 		private:
-		size_t	_size;
-		size_t	_capacity;
-		T		*_data;
+		size_t		_size;
+		size_t		_capacity;
+		T			*_data;
+		Allocator 	A;
 	};
 
 
