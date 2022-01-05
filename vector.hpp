@@ -1,9 +1,11 @@
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
+#include <iostream>
 
 namespace ft
 {
-	template < class T, class Allocator = allocator<T> >
+	
+	template < class T, class Allocator = std::allocator<T> >
 	class vector
 	{
 		public:
@@ -21,9 +23,18 @@ namespace ft
 		typedef typename allocator_type::size_type       size_type;
 
 		public: // constructors
-		explicit vector (const allocator_type& allocator = allocator_type());
-		explicit vector (size_type n, const value_type& val = value_type(),
-				const allocator_type& allocator = allocator_type());
+		explicit vector (const allocator_type& allocator = allocator_type())
+		{
+			_size = 0;
+			_capacity = 0;
+			_data = nullptr;
+		}
+		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& allocator = allocator_type())
+		{
+			_size = n;
+			_capacity = n;
+			_data = allocator.allocate(n);
+		}
 		//template <class InputIterator>
         //vector (InputIterator first, InputIterator last,
 		//		const allocator_type& allocator = allocator_type());
@@ -31,28 +42,28 @@ namespace ft
 
 		public: // Iterators
 		public: // Capacity
+		size_type size(void) const
+		{
+			return (_size);
+		}
+		size_type capacity(void) const
+		{
+			return (_capacity);
+		}
 		public: // Element access
 		public: // Modifiers
 		public: // Allocator
 		public: // Non-member function overloads
 		public: // Template specializations
 		private:
-		size_t	m_size;
-		size_t	m_capacity;
-		T		*data;
-	}
-	explicit vector (const allocator_type& allocator = allocator_type())
-	{
-		m_size = 0;
-		m_capacity = 0;
-		data = nullptr;
-	}
-	explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& allocator = allocator_type())
-	{
-		m_size = n;
-		m_capacity = n;
-		data = allocator.allocate(n);
-	}
+		size_t	_size;
+		size_t	_capacity;
+		T		*_data;
+	};
+
+
+	
 }
 
 #endif
+
