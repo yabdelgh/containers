@@ -46,9 +46,17 @@ namespace ft
 		{
 			return (_size);
 		}
+		size_type max_size(void) const
+		{
+			return (A.max_size());
+		}
 		size_type capacity(void) const
 		{
 			return (_capacity);
+		}
+		bool empty() const
+		{
+			return (!_size);
 		}
 		public: // Element access
 		public: // Modifiers
@@ -56,10 +64,14 @@ namespace ft
 		public: // Non-member function overloads
 		public: // Template specializations
 		private:
-		size_t		_size;
-		size_t		_capacity;
-		T			*_data;
-		Allocator 	A;
+		size_type		_size;
+		size_type		_capacity;
+		value_type		*_data;
+		allocator_type 	A;
+		public:
+		virtual ~vector()
+		{
+		}
 	};
 
 
