@@ -67,6 +67,18 @@ namespace ft
 		{
 				return (_data[n]);
 		}
+		reference at (size_type n)
+		{
+			if (n >= _size)
+				throw std::out_of_range("vector::at");
+			return (_data[n]);
+		}
+		const_reference at (size_type n) const
+		{
+			if (n >= _size)
+				throw std::out_of_range("vector::at");
+			return (_data[n]);
+		}
 		public: // Modifiers
 		public: // Allocator
 		public: // Non-member function overloads

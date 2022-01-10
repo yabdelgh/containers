@@ -6,9 +6,14 @@ int main()
 {
 	ft::vector<int> name1(1999);
 	std::vector<int> name2(1999);
-
-	std::cout << name1[9999999] << std::endl;
-//	std::cout << name2[9999999] << std::endl;
+	try
+	{
+		std::cout << name2.at(9999) << std::endl;
+	}
+	catch (std::out_of_range & e)
+	{
+		std::cout << e.what() << std::endl;
+	}
 	
 	return (0);
 }
