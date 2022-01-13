@@ -59,6 +59,7 @@ namespace ft
 		}
 		
 		public: // Element access
+
 		reference operator[] (size_type n)
 		{
 			return (_data[n]);
@@ -79,6 +80,23 @@ namespace ft
 				throw std::out_of_range("vector::at");
 			return (_data[n]);
 		}
+		reference front()
+		{
+			return (_data[0]);
+		}
+		const_reference front() const
+		{
+			return (_data[0]);
+		}
+		reference back()
+		{
+			return (_data[_size - 1]);
+		}
+		const_reference back() const
+		{
+			return (_data[_size - 1]);
+		}
+
 		public: // Modifiers
 		public: // Allocator
 		public: // Non-member function overloads
