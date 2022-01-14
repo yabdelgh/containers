@@ -1,21 +1,19 @@
 #include <iostream>
-#include "vector.hpp"
 #include <vector>
-
+#include <iterator>
 int main()
 {
-	ft::vector<int> my(10);
-
-	std::cout << my.front() << std::endl;
-	std::cout << my.back() << std::endl;
-	std::cout << my[9] << std::endl;
-	try
-	{
-		std::cout << my.at(66666) << std::endl;
-	}
-	catch (std::exception & e)
-	{
-		std::cout << e.what() << std::endl;
-	}
+	std::vector<int> my;
+	std::vector<int>::iterator it;
+	std::vector<int>::iterator ite;
+	it = my.begin();
+	ite = my.end();
+	for(int i= 0 ; i < 10000 ; i++)
+		my.push_back(i);
+	ite = my.end();
+	while (it != ite)
+		std::cout << *it++ << std::endl;
+	
 	return (0);
 }
+
