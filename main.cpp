@@ -8,8 +8,11 @@ int main()
 	ft::vector<int>::iterator it = my.begin();
 	ft::vector<int>::iterator ite = my.end();
 
-	ite = it;
-	std::cout << *ite << std::endl;
+	while (it != ite)
+	{
+		std::cout << *it << std::endl;
+		it++;
+	}
 	return (0);
 }
 

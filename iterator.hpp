@@ -59,9 +59,9 @@ namespace ft
 		vec_iterator( const vec_iterator<value_type *> &copie) : _ptr(copie._ptr) {};
 		vec_iterator( const vec_iterator<const value_type *> &copie) : _ptr(copie._ptr) {};
 
-		public:
+		public: // operators
 		
-		//operators
+		// assignment
 		vec_iterator& operator=(const vec_iterator &copie) 
 		{
 			if (this != &copie)
@@ -82,6 +82,31 @@ namespace ft
 		{  return _ptr > r._ptr;  }
 		bool operator>=(const vec_iterator& r)  const
 		{  return _ptr >= r._ptr;  }
+
+		//	Increment and Decrement
+		vec_iterator& operator++()
+		{ 
+			++_ptr;
+			return *this; 
+		}
+		vec_iterator operator++(int)
+		{  
+			pointer tmp = _ptr; 
+			++*this; 
+			return vec_iterator(tmp);  
+		}
+		vec_iterator& operator--()
+		{  
+			--_ptr; 
+			return *this; 
+	   	}
+		vec_iterator operator--(int)
+		{  
+			pointer tmp = _ptr; 
+			--*this;
+		   	return vec_iterator(tmp); 
+		}
+
 
 	 	
 		reference operator*() const
