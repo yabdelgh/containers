@@ -43,20 +43,34 @@ namespace ft
 	class vec_iterator
 	{
 		public:
-		typedef T													iterator_type;
-		typedef iterator_traits<iterator_type>::value_type			value_type;
-  		typedef iterator_traits<iterator_type>::difference_type		difference_type;
-    	typedef iterator_traits<iterator_type>::pointer				pointer;
-    	typedef iterator_traits<iterator_type>::reference			reference;
-    	typedef iterator_traits<iterator_type>::iterator_category	iterator_category;
+		typedef T															iterator_type;
+		typedef typename iterator_traits<iterator_type>::value_type			value_type;
+  		typedef typename iterator_traits<iterator_type>::difference_type	difference_type;
+    	typedef typename iterator_traits<iterator_type>::pointer			pointer;
+    	typedef typename iterator_traits<iterator_type>::reference			reference;
+    	typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
 
 		protected:
 		pointer _ptr;
 
-		public: //constructors
-		explicit vec_iterator(pointer ptr);
-		vec_iterator();
-	}
+		public:
+		pointer get_ptr() const
+		{	return (_ptr);	}
+
+		public:
+		explicit vec_iterator(pointer ptr) : _ptr(ptr) {};
+		vec_iterator() : _ptr(0) {};
+	//	vec_iterator( const vec_iterator<value_type *> &copie) : _ptr(copie.get_ptr()) {};
+	//	vec_iterator( const vec_iterator<const value_type *> &copie) : _ptr(copie.get_ptr()) {};
+
+		public: //operators
+	 	reference operator*() const
+		{	return (*_ptr);		}
+
+		public:
+		virtual ~vec_iterator() {};
+
+	};
 
 }
 #endif

@@ -1,6 +1,7 @@
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
 #include <iostream>
+#include "iterator.hpp"
 
 namespace ft
 {
@@ -16,8 +17,8 @@ namespace ft
 		typedef typename allocator_type::const_pointer		const_pointer;
 		typedef vec_iterator<pointer>						iterator;
 		typedef vec_iterator<const_pointer>                 const_iterator;
-		typedef reverse_iterator<iterator>					reverse_iterator;
-		typedef reverse_iterator<const_iterator>			const_reverse_iterator;
+	//	typedef reverse_iterator<iterator>					reverse_iterator;
+	//	typedef reverse_iterator<const_iterator>			const_reverse_iterator;
 		typedef typename allocator_type::difference_type	difference_type;
 		typedef typename allocator_type::size_type			size_type;
 
@@ -36,6 +37,10 @@ namespace ft
 		//vector (const vector& x);
 
 		public: // Iterators
+		iterator begin();
+		const_iterator begin() const;
+  		iterator end();
+		const_iterator end() const;
 		public: // Capacity
 		size_type size(void) const;
 		size_type max_size(void) const;
@@ -62,6 +67,8 @@ namespace ft
 		{
 		}
 	};
+
+
 	
 	// Constructors
 	template < class T, class Allocator >
@@ -77,9 +84,41 @@ namespace ft
 	{
 		_size = n;
 		_capacity = n;
-		_data = A.allocate(n);
+		_data = (n == 0) ? nullptr : A.allocate(n);
+		for (int i; i < n; i++)
+			_data[i] = val;
+		
 	}
 	
+	// iterators
+	
+	template < class T, class Allocator>
+	typename vector<T, Allocator>::iterator
+	vector<T, Allocator>::begin()
+	{
+		return (iterator(_data));
+	}
+	
+	template < class T, class Allocator>
+	typename vector<T, Allocator>::const_iterator
+	vector<T, Allocator>::begin() const
+	{
+		return (iterator(_data));
+	}
+	
+	template < class T, class Allocator>
+	typename vector<T, Allocator>::iterator
+	vector<T, Allocator>::end()
+	{
+		return (iterator(_data + _size));
+	}
+	
+	template < class T, class Allocator>
+	typename vector<T, Allocator>::const_iterator
+	vector<T, Allocator>::end() const
+	{
+		return (iterator(_data + _size));
+	}
 
 	// Capacity
 	template < class T, class Allocator >
