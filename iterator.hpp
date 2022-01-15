@@ -30,7 +30,7 @@ namespace ft
 	};
 
 	template <class T>
-	class iterator_traits<const T*>
+	struct iterator_traits<const T*>
 	{
     	typedef ptrdiff_t difference_type;
     	typedef T value_type;
@@ -54,17 +54,37 @@ namespace ft
 		pointer _ptr;
 
 		public:
-		pointer get_ptr() const
-		{	return (_ptr);	}
-
-		public:
 		explicit vec_iterator(pointer ptr) : _ptr(ptr) {};
 		vec_iterator() : _ptr(0) {};
-	//	vec_iterator( const vec_iterator<value_type *> &copie) : _ptr(copie.get_ptr()) {};
-	//	vec_iterator( const vec_iterator<const value_type *> &copie) : _ptr(copie.get_ptr()) {};
+		vec_iterator( const vec_iterator<value_type *> &copie) : _ptr(copie._ptr) {};
+		vec_iterator( const vec_iterator<const value_type *> &copie) : _ptr(copie._ptr) {};
 
-		public: //operators
-	 	reference operator*() const
+		public:
+		
+		//operators
+		vec_iterator& operator=(const vec_iterator &copie) 
+		{
+			if (this != &copie)
+				_ptr = copie._ptr;
+			return (*this);
+		}
+		
+		// Comparison operators
+		bool operator== (const vec_iterator& r)  const
+		{  return _ptr == r.m_ptr;  }
+		bool operator!= (const vec_iterator& r)  const
+		{  return _ptr != r._ptr;  }
+		bool operator<(const vec_iterator& r)  const
+		{  return _ptr < r._ptr;  }
+		bool operator<=(const vec_iterator& r)  const
+		{  return _ptr <= r._ptr;  }
+		bool operator>(const vec_iterator& r)  const
+		{  return _ptr > r._ptr;  }
+		bool operator>=(const vec_iterator& r)  const
+		{  return _ptr >= r._ptr;  }
+
+	 	
+		reference operator*() const
 		{	return (*_ptr);		}
 
 		public:
