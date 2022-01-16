@@ -69,7 +69,7 @@ namespace ft
 			return (*this);
 		}
 		
-		// Comparison operators
+		// Comparison
 		bool operator== (const vec_iterator& r)  const
 		{  return _ptr == r.m_ptr;  }
 		bool operator!= (const vec_iterator& r)  const

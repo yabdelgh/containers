@@ -59,9 +59,10 @@ namespace ft
 		const_reference back() const;
 
 		public: // Modifiers
-		public: // Allocator
-		public: // Non-member function overloads
-		public: // Template specializations
+		void pop_back();
+		void clear();
+		void swap (vector& x);
+	
 		public:
 		virtual ~vector()
 		{
@@ -71,6 +72,7 @@ namespace ft
 
 	
 	// Constructors
+	
 	template < class T, class Allocator >
 	vector<T, Allocator>::vector (const allocator_type& allocator)
 	{
@@ -85,7 +87,7 @@ namespace ft
 		_size = n;
 		_capacity = n;
 		_data = (n == 0) ? nullptr : A.allocate(n);
-		for (int i; i < n; i++)
+		for (int i = 0; i < n; i++)
 			_data[i] = val;
 		
 	}
@@ -121,6 +123,7 @@ namespace ft
 	}
 
 	// Capacity
+	
 	template < class T, class Allocator >
 	typename vector<T, Allocator>::size_type
 	vector<T, Allocator>::size(void) const
@@ -149,6 +152,7 @@ namespace ft
 	}
 	
 	// Element access	
+	
 	template < class T, class Allocator >
 	typename vector<T, Allocator>::reference
 	vector<T, Allocator>::operator[](size_type n)
@@ -208,6 +212,46 @@ namespace ft
 	{
 			return (_data[_size - 1]);
 	}
+
+	// Modifiers
+		
+	template < class T, class Allocator >
+	void
+	vector<T, Allocator>::pop_back()
+	{
+		_size -= 1;
+		A.destroy(_data +_size);
+	}
+	
+	template < class T, class Allocator >
+	void
+	vector<T, Allocator>::clear()
+	{
+		while (_size)
+			pop_back();
+	}
+
+	template < class T, class Allocator >
+	void
+	vector<T, Allocator>::swap (vector& x)
+	{
+		size_type		tmp;
+		value_type* 	tmp_ptr;
+
+		tmp = _size;
+		_size = x._size;
+		x._size = tmp;
+
+		tmp = _capacity;
+		_capacity = x._capacity;
+		x._capacity = tmp;
+
+		tmp_ptr = _data;
+		_data = x._data;
+		x._data = tmp_ptr;
+	}
+
+
 }
 
 #endif

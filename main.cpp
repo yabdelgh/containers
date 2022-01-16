@@ -1,16 +1,52 @@
 #include <iostream>
 #include "vector.hpp"
+//#include <vector>
+//namespace ft = std;
 int main()
 {
 	ft::vector<int > my(10,9);
-	ft::vector< int >::iterator it = my.begin();
-	ft::vector< int >::iterator in = it + 9;
-<<<<<<< HEAD
-	std::cout << it - in << std::endl;	
-=======
+	ft::vector<int > your(20,5);
+	ft::vector< int >::iterator ib = my.begin();
+	ft::vector< int >::iterator ie = my.end();
+
+	while (ib != ie)
+	{
+		std::cout << " "  << *ib << " " ;
+		ib++;
+	}
 	
-	std::cout << *in << std::endl;
->>>>>>> 570084370ce2313ef9275bb1a203b7cec93f4109
+	std::cout << std::endl;
+	my.pop_back();
+	ib = my.begin();
+	ie = my.end();
+	
+	while (ib != ie)
+	{
+		std::cout << " "  << *ib << " " ;
+		ib++;
+	}
+
+	ib = my.begin();
+	ie = my.end();
+
+	my.swap(your);
+	std::cout << std::endl;
+	while (ib != ie)
+	{
+		std::cout << " "  << *ib << " " ;
+		ib++;
+	}
+
+	ib = my.begin();
+	ie = my.end();
+
+	std::cout << std::endl;	
+	while (ib != ie)
+	{
+		std::cout << " "  << *ib << " " ;
+		ib++;
+	}
+
 	return (0);
 }
 
