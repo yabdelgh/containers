@@ -107,7 +107,25 @@ namespace ft
 		   	return vec_iterator(tmp); 
 		}
 
-
+		// Arithmetic operators + and -
+		vec_iterator operator+(int n)
+		{
+			return (vec_iterator(_ptr + n));
+		}
+		vec_iterator operator-(int n)
+		{
+			return (vec_iterator(_ptr - n));
+		}
+		vec_iterator& operator+=(int n)
+		{
+			_ptr += n;
+			return (*this);
+		}
+		vec_iterator& operator-=(int n)
+		{
+			_ptr -= n;
+			return (*this);
+		}
 	 	
 		reference operator*() const
 		{	return (*_ptr);		}
