@@ -111,6 +111,8 @@ namespace ft
 	 	
 		reference operator*() const
 		{	return (*_ptr);		}
+		pointer operator->() const
+		{	return (_ptr);		}
 
 		public:
 		virtual ~vec_iterator() {};
@@ -118,4 +120,5 @@ namespace ft
 	};
 
 }
+
 #endif
