@@ -126,7 +126,15 @@ namespace ft
 			_ptr -= n;
 			return (*this);
 		}
-	 	
+		difference_type operator-(const vec_iterator& r)
+		{	
+			return (_ptr - r._ptr);
+		}
+
+		// Dereference 
+
+	 	reference operator[](size_t n) const
+		{	return (_ptr[n]);	}
 		reference operator*() const
 		{	return (*_ptr);		}
 		pointer operator->() const
