@@ -59,10 +59,11 @@ namespace ft
 		const_reference back() const;
 
 		public: // Modifiers
-		void pop_back();
 		void clear();
+		void pop_back();
 		void swap (vector& x);
-	
+		void push_back (const value_type& val);
+		
 		public:
 		virtual ~vector()
 		{
@@ -252,6 +253,17 @@ namespace ft
 		while (_size)
 			pop_back();
 	}
+
+	template < class T, class Allocator >
+	void
+	vector<T, Allocator>::push_back (const value_type& val)
+	{
+		_size += 1;
+		if (_size > _capacity)
+			this->reserve(_capacity * 2);
+		A.construct(&_data[_size-1], val);
+	}
+	
 
 	template < class T, class Allocator >
 	void

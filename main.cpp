@@ -4,11 +4,17 @@
 //namespace ft = std;
 int main()
 {
-	ft::vector<int> my(400,10);
+	ft::vector<int> my(5,10);
+	my.pop_back();
+	my.push_back(9);
+	ft::vector<int>::iterator it= my.begin();
+	ft::vector<int>::iterator ite= my.end();
 
-	std::cout << my.capacity() << std::endl;
-	my.reserve(10002);
-	std::cout << my.capacity() << std::endl;
+	while (it != ite)
+	{
+		std::cout << *it << std::endl;
+		it++;
+	}
 
 	return (0);
 }
