@@ -46,7 +46,7 @@ namespace ft
 		size_type max_size(void) const;
 		size_type capacity(void) const;
 		bool empty() const;
-		
+		void reserve (size_type n);
 		public: // Element access
 
 		reference operator[] (size_type n);
@@ -146,10 +146,32 @@ namespace ft
 	}
 
 	template < class T, class Allocator >
-	bool vector<T, Allocator>::empty() const
+	bool
+	vector<T, Allocator>::empty() const
 	{
 		return (!_size);
 	}
+	
+	template < class T, class Allocator >
+	void
+	vector<T, Allocator>::reserve (size_type n)
+	{
+		if (n > _capacity)
+		{
+			value_type *tmp;
+			
+			tmp = A.allocate(n);
+			for(int i = 0; i < _size; i++)
+			{
+				A.construct(&tmp[i], _data[i]);
+				A.destroy(&_data[i]);
+			}
+			A.deallocate(_data, _capacity);
+			_data = tmp;
+			_capacity = n;
+		}
+	}
+
 	
 	// Element access	
 	
