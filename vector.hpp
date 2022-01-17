@@ -63,7 +63,9 @@ namespace ft
 		void pop_back();
 		void swap (vector& x);
 		void push_back (const value_type& val);
-		
+		void assign (size_type n, const value_type& val);
+		template <class InputIterator>
+  		void assign (InputIterator first, InputIterator last);
 		public:
 		virtual ~vector()
 		{
@@ -260,10 +262,44 @@ namespace ft
 	{
 		_size += 1;
 		if (_size > _capacity)
-			this->reserve(_capacity * 2);
+			reserve(_capacity * 2);
 		A.construct(&_data[_size-1], val);
 	}
 	
+
+	template < class T, class Allocator >
+	template <class InputIterator>
+  	void
+  	vector<T, Allocator>::assign (InputIterator first, InputIterator last)
+	{
+		difference_type	len = last - first;
+		this->clear();
+        if (len > _capacity)
+        {
+            A.deallocate(_data, _capacity);
+            _data = A.allocate(len);
+            _capacity = len;
+        }
+        _size = len;
+        for (size_t i = 0; i < _size; i++)
+            A.construct(_data + i, *(first + i));
+	}
+	
+	template < class T, class Allocator >
+	void
+	vector<T, Allocator>::assign (size_type n, const value_type& val)
+	{
+		this->clear();
+		if (n > _capacity)
+		{
+			A.deallocate(_data, _capacity);
+			_data = A.allocate(n);
+			_capacity = n;
+		}
+		_size = n;
+		for( size_t i = 0 ; i < _size ; i++ )
+			A.construct(_data + i, val);
+	}
 
 	template < class T, class Allocator >
 	void
