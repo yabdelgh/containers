@@ -66,9 +66,14 @@ namespace ft
 		void assign (size_type n, const value_type& val);
 		template <class InputIterator>
   		void assign (InputIterator first, InputIterator last);
+		iterator erase (iterator position);
+		iterator erase (iterator first, iterator last);
+	
 		public:
 		virtual ~vector()
 		{
+			this->clear();
+			A.deallocate(_data, _capacity);
 		}
 	};
 
@@ -91,7 +96,7 @@ namespace ft
 		_capacity = n;
 		_data = (n == 0) ? nullptr : A.allocate(n);
 		for (int i = 0; i < n; i++)
-			_data[i] = val;
+			A.construct(_data + i, val);
 		
 	}
 	
@@ -162,7 +167,6 @@ namespace ft
 		if (n > _capacity)
 		{
 			value_type *tmp;
-			
 			tmp = A.allocate(n);
 			for(int i = 0; i < _size; i++)
 			{
@@ -252,18 +256,20 @@ namespace ft
 	void
 	vector<T, Allocator>::clear()
 	{
-		while (_size)
-			pop_back();
+		for (int i = 0; i < _size ; i++)
+			A.destroy(_data + i);
 	}
 
 	template < class T, class Allocator >
 	void
 	vector<T, Allocator>::push_back (const value_type& val)
 	{
-		_size += 1;
-		if (_size > _capacity)
+		if (_capacity == 0)
+			reserve(1);
+		else if (_size  == _capacity)
 			reserve(_capacity * 2);
-		A.construct(&_data[_size-1], val);
+		A.construct(&_data[_size], val);
+		_size += 1;
 	}
 	
 
@@ -300,7 +306,35 @@ namespace ft
 		for( size_t i = 0 ; i < _size ; i++ )
 			A.construct(_data + i, val);
 	}
-
+	
+	template < class T, class Allocator >
+	typename vector<T, Allocator>::iterator
+	vector<T, Allocator>::erase (iterator position)
+	{
+		return (erase(position, position + 1));
+	}
+	
+	template < class T, class Allocator >
+	typename vector<T, Allocator>::iterator
+	vector<T, Allocator>::erase (iterator first, iterator last)
+	{
+		iterator e = this->end();
+		iterator ret = first;
+		_size -= last - first;
+		while (last != e)
+		{
+			*first = *last;
+			last++;
+			first++;
+		}
+		while (first != e)
+		{
+			A.destroy(first.base());
+			first++;
+		}
+		return (ret);	
+	}
+	
 	template < class T, class Allocator >
 	void
 	vector<T, Allocator>::swap (vector& x)

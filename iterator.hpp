@@ -58,7 +58,13 @@ namespace ft
 		vec_iterator() : _ptr(0) {};
 		vec_iterator( const vec_iterator<value_type *> &copie) : _ptr(copie._ptr) {};
 		vec_iterator( const vec_iterator<const value_type *> &copie) : _ptr(copie._ptr) {};
-
+		
+		public:
+		pointer base() const
+		{
+			return (_ptr);
+		}
+	
 		public: // operators
 		
 		// assignment
