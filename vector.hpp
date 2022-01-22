@@ -81,8 +81,8 @@ namespace ft
 		iterator erase (iterator first, iterator last);
 		iterator insert (iterator position, const value_type& val);
     	void insert (iterator position, size_type n, const value_type& val);
-	//	template <class InputIterator>
-    //	void insert (iterator position, InputIterator first, InputIterator last);
+		template <class InputIterator>
+    	void insert (iterator position, InputIterator first, InputIterator last);
 	
 	/*************** destructor *****************/
 		
@@ -452,6 +452,86 @@ namespace ft
 					A.construct(it.base(), val);
 				else
 					*it = val;
+				it--;
+			}
+			_size += n;
+		}
+	}
+
+	template < class T, class Allocator >
+	template < class InputIterator	>
+    void
+	vector<T, Allocator>::insert (iterator position, InputIterator first, InputIterator last)
+	{
+		size_t n = last - first;
+		if (_size + n > _capacity)
+		{
+			value_type *tmp;
+			iterator it;
+			iterator ite;
+			size_t i;
+
+			it = this->begin();
+			ite = this->end();
+			_size += n;
+			if (_size  > _capacity * 2)
+				tmp = A.allocate(_size);
+			else
+				tmp = A.allocate(_capacity * 2);
+			i = 0;
+			while (it != position)
+			{
+				A.construct(tmp + i, *it);
+				i++;
+				it++;
+			}
+			while (first != last)
+			{
+				A.construct(tmp + i, *first);
+				first++;
+				i++;
+			}
+			while (it != ite)
+			{
+				A.construct(tmp + i, *it);
+				i++;
+				it++;
+			}
+			it = this->begin();
+			while (it != position)
+			{
+				A.destroy(it.base());
+				it++;
+			}
+			A.deallocate(_data, _capacity);	
+			_data = tmp;
+			if (_size > _capacity * 2)
+				_capacity = _size;
+			else
+				_capacity *= 2;
+		}
+		else
+		{
+			iterator it = this->end() + n - 1;
+			iterator end = this->end() - 1;
+			
+			while (it != end && (it - n) != position -1)
+			{
+				A.construct(it.base(), *(it - n));
+				it--;
+			}
+			while (it - n != position - 1)
+			{
+				*it = *(it - n);
+				it--;
+			}
+			while (it != position - 1)
+			{
+				last--;
+				if (it > end)
+					A.construct(it.base(), *last);
+				else
+					*it = *last;
 				it--;
 			}
 			_size += n;
