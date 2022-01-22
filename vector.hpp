@@ -377,8 +377,8 @@ namespace ft
 	void
 	vector<T, Allocator>::insert (iterator position, size_type n, const value_type& val)
 	{
-		if (_capacity == 0 || position == this->end())
-			this->push_back(val);
+//		if (_capacity == 0 || position == this->end())
+//			this->push_back(val);
 		else if (_size + n > _capacity)
 		{
 			value_type *tmp;
