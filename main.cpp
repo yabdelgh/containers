@@ -41,8 +41,9 @@ class A
 int main()
 {
 	ft::vector<A> vec;
-//	vec.reserve(10);
 	ft::vector<A>::iterator it = vec.begin();
+//	vec.reserve(10);
+	it = vec.begin();
 	std::cout << "size: " << vec.size() << std::endl;
 	std::cout << "capacity: " << vec.capacity() << std::endl;
 	std::cout << "size: " << vec.size() << std::endl;
@@ -60,15 +61,20 @@ int main()
 	std::cout << "size: " << vec.size() << std::endl;
 	std::cout << "capacity: " << vec.capacity() << std::endl;
 	it = vec.begin();
-	vec.insert(it + 1,4, 5);
+	vec.insert(it + 1,2, 5);
 	std::cout << "size: " << vec.size() << std::endl;
 	std::cout << "capacity: " << vec.capacity() << std::endl;
+	it = vec.begin() + 2;
+	it = vec.insert(it - 2, 99);
+	std::cout << "wa meee" << it->b <<  std::endl;
 	it = vec.begin();
 	while (it != vec.end())
 	{
 		std::cout << it->b << std::endl;
 		it++;
 	}
+	it = vec.begin() + 2;
+	vec.insert(it, 99);
 	return (0);
 }
 
