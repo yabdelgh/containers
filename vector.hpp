@@ -28,27 +28,36 @@ namespace ft
 		value_type		*_data;
 		allocator_type 	A;
 		
-		public: // constructors
+	/*************** constructors *****************/
+		
+		public:
 		explicit vector (const allocator_type& allocator = allocator_type());
 		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& allocator = allocator_type());
 		//template <class InputIterator>
 		//vector (InputIterator first, InputIterator last,
 		//		const allocator_type& allocator = allocator_type());
 		//vector (const vector& x);
-
-		public: // Iterators
+		
+	/*************** iterators *******************/
+		
+		public:
 		iterator begin();
 		const_iterator begin() const;
   		iterator end();
 		const_iterator end() const;
-		public: // Capacity
+	
+	/*************** capacity *******************/
+		
+		public:
 		size_type size(void) const;
 		size_type max_size(void) const;
 		size_type capacity(void) const;
 		bool empty() const;
 		void reserve (size_type n);
-		public: // Element access
-
+	
+	/*************** element access **************/
+		
+		public:
 		reference operator[] (size_type n);
 		const_reference operator[] (size_type n) const;
 		reference at (size_type n);
@@ -58,7 +67,9 @@ namespace ft
 		reference back();
 		const_reference back() const;
 
-		public: // Modifiers
+	/*************** modifiers *****************/
+		
+		public:
 		void clear();
 		void pop_back();
 		void swap (vector& x);
@@ -68,7 +79,13 @@ namespace ft
   		void assign (InputIterator first, InputIterator last);
 		iterator erase (iterator position);
 		iterator erase (iterator first, iterator last);
+//		iterator insert (iterator position, const value_type& val);
+    	void insert (iterator position, size_type n, const value_type& val);
+	//	template <class InputIterator>
+    //	void insert (iterator position, InputIterator first, InputIterator last);
 	
+	/*************** destructor *****************/
+		
 		public:
 		virtual ~vector()
 		{
@@ -79,7 +96,7 @@ namespace ft
 
 
 	
-	// Constructors
+	//  Constructors --------->
 	
 	template < class T, class Allocator >
 	vector<T, Allocator>::vector (const allocator_type& allocator)
@@ -100,7 +117,7 @@ namespace ft
 		
 	}
 	
-	// iterators
+	// iterators ------------->
 	
 	template < class T, class Allocator>
 	typename vector<T, Allocator>::iterator
@@ -130,7 +147,7 @@ namespace ft
 		return (iterator(_data + _size));
 	}
 
-	// Capacity
+	// Capacity ----------->
 	
 	template < class T, class Allocator >
 	typename vector<T, Allocator>::size_type
@@ -180,7 +197,7 @@ namespace ft
 	}
 
 	
-	// Element access	
+	// Element access ------------>
 	
 	template < class T, class Allocator >
 	typename vector<T, Allocator>::reference
@@ -242,7 +259,7 @@ namespace ft
 			return (_data[_size - 1]);
 	}
 
-	// Modifiers
+	// Modifiers --------->
 		
 	template < class T, class Allocator >
 	void
@@ -354,8 +371,84 @@ namespace ft
 		_data = x._data;
 		x._data = tmp_ptr;
 	}
+	
+	template < class T, class Allocator >
+//	typename vector<T, Allocator>::iterator
+	void
+	vector<T, Allocator>::insert (iterator position, size_type n, const value_type& val)
+	{
+		if (_capacity == 0 || position == this->end())
+			this->push_back(val);
+		else if (_size + n > _capacity)
+		{
+			value_type *tmp;
+			iterator it;
+			size_t i;
 
-
+			it = this->begin();
+			if (_size + n > _capacity * 2)
+				tmp = A.allocate(_size + n);
+			else
+				tmp = A.allocate(_capacity * 2);
+			i = 0;
+			while (it != position)
+			{
+				A.construct(tmp + i, *it);
+				i++;
+				it++;
+			}
+			position = this->end();
+			_size += n;
+			while (n--)
+			{
+				A.construct(tmp + i, val);
+				i++;
+			}
+			while (it != position)
+			{
+				A.construct(tmp + i, *it);
+				i++;
+				it++;
+			}
+			it = this->begin();
+			while (it != position)
+			{
+				A.destroy(it.base());
+				it++;
+			}
+			A.deallocate(_data, _capacity);	
+			_data = tmp;
+			_capacity *= 2;
+		}
+		else
+		{
+			iterator it = this->end() + n - 1;
+			iterator end = this->end() - 1;
+			
+			while (it != end && (it - n) != position -1)
+			{
+				A.construct(it.base(), *(it - n));
+				it--;
+			}
+			while (it - n != position - 1)
+			{
+				*it = *(it -n);
+				it--;
+			}
+			while (it != end)
+			{
+				A.construct(it.base(), val);
+				it--;
+			}
+			while (it != position - 1)
+			{
+				*it = val;
+				it--;
+			}
+			_size += n;
+		}
+//		return (position);
+	}
 }
 
 #endif

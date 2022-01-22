@@ -9,7 +9,7 @@ class A
 	A(int a)
 	{
 		b = a;
-		str = strdup("y");
+		str = strdup("yassine abdelghafour");
 		std::cout << b <<  "constructor called" << std::endl;
 	}
 	A(const A& copie)
@@ -24,7 +24,7 @@ class A
 			delete str;
 		b = copie.b;
 		str = strdup(copie.str);
-		std::cout << "assignment operator called" << std::endl;
+		std::cout << b <<  "assignment operator called" << std::endl;
 		return (*this);
 	}
 	public:
@@ -41,33 +41,33 @@ class A
 int main()
 {
 	ft::vector<A> vec;
-	std::cout << std::endl;
+//	vec.reserve(10);
+	ft::vector<A>::iterator it = vec.begin();
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << vec.capacity() << std::endl;
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << vec.capacity() << std::endl;
 	vec.push_back(1);
-	std::cout << std::endl;
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << vec.capacity() << std::endl;
 	vec.push_back(2);
-	std::cout << std::endl;
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << vec.capacity() << std::endl;
 	vec.push_back(3);
-	std::cout << std::endl;
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << vec.capacity() << std::endl;
 	vec.push_back(4);
-	std::cout << std::endl;
-	ft::vector<A>::iterator it = vec.begin() + 1;
-	ft::vector<A>::iterator b = vec.begin();
-	ft::vector<A>::iterator e = vec.end();
-	while (b != e)
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << vec.capacity() << std::endl;
+	it = vec.begin();
+	vec.insert(it + 1,4, 5);
+	std::cout << "size: " << vec.size() << std::endl;
+	std::cout << "capacity: " << vec.capacity() << std::endl;
+	it = vec.begin();
+	while (it != vec.end())
 	{
-		std::cout << b->b << std::endl;
-		b++;
-	}
-	std::cout << std::endl;
-	it = vec.erase(it,it+2); 
-	std::cout << "ret" << it->b << std::endl;
-	std::cout << std::endl;
-	 b = vec.begin();
-	 e = vec.end();
-	while (b != e)
-	{
-		std::cout << b->b << std::endl;
-		b++;
+		std::cout << it->b << std::endl;
+		it++;
 	}
 	return (0);
 }

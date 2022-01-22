@@ -77,7 +77,7 @@ namespace ft
 		
 		// Comparison
 		bool operator== (const vec_iterator& r)  const
-		{  return _ptr == r.m_ptr;  }
+		{  return _ptr == r._ptr;  }
 		bool operator!= (const vec_iterator& r)  const
 		{  return _ptr != r._ptr;  }
 		bool operator<(const vec_iterator& r)  const
