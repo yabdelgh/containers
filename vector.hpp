@@ -54,6 +54,7 @@ namespace ft
 		size_type capacity(void) const;
 		bool empty() const;
 		void reserve (size_type n);
+		void resize (size_type n, value_type val = value_type());
 	
 	/*************** element access **************/
 		
@@ -194,6 +195,20 @@ namespace ft
 			_data = tmp;
 			_capacity = n;
 		}
+	}
+	
+	template < class T, class Allocator >
+	void
+	vector<T, Allocator>::resize (size_type n, value_type val )
+	{
+		iterator it;
+		iterator ite;
+		it = this->begin();
+		ite = this->end();
+		if (n < _size)
+			this->erase(it + n, ite);
+		else if (n > _size)
+			this->insert(ite, n - _size, val);
 	}
 
 	
