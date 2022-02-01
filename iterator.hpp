@@ -39,11 +39,11 @@ namespace ft
     	typedef random_access_iterator_tag iterator_category;
 	};
 
-	template< class T >
-	class vec_iterator
+	template< class Iterator >
+	class wrap_iterator
 	{
 		public:
-		typedef T															iterator_type;
+		typedef Iterator													iterator_type;
 		typedef typename iterator_traits<iterator_type>::value_type			value_type;
   		typedef typename iterator_traits<iterator_type>::difference_type	difference_type;
     	typedef typename iterator_traits<iterator_type>::pointer			pointer;
@@ -51,106 +51,183 @@ namespace ft
     	typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
 
 		protected:
-		pointer _ptr;
+		iterator_type _current;
 
 		public:
-		explicit vec_iterator(pointer ptr) : _ptr(ptr) {};
-		vec_iterator() : _ptr(0) {};
-		vec_iterator( const vec_iterator<value_type *> &copie) : _ptr(copie._ptr) {};
-		vec_iterator( const vec_iterator<const value_type *> &copie) : _ptr(copie._ptr) {};
+		explicit wrap_iterator(const iterator_type &current) : _current(current) {};
+		wrap_iterator() : _current() {};
+		wrap_iterator( const wrap_iterator<value_type *> &copie) : _current(copie.base()) {};
+		wrap_iterator( const wrap_iterator<const value_type *> &copie) : _current(copie.base()) {};
 		
 		public:
-		pointer base() const
-		{
-			return (_ptr);
+	
+		public: // forward iterator requirements
+		
+		reference operator*() const
+		{	
+			return (*_current);		
+		}
+		pointer operator->() const
+		{	
+			return (_current);		
+		}
+		wrap_iterator& operator++()
+		{ 
+			++_current;
+			return *this; 
+		}
+		wrap_iterator operator++(int)
+		{  
+			return wrap_iterator(_current++);  
+		}
+ 		
+		public: // bidirectional iterator requirements
+		
+		wrap_iterator& operator--()
+		{  
+			--_current; 
+			return (*this); 
+	   	}
+		wrap_iterator operator--(int)
+		{  
+		   	return (vec_iterator(_current--)); 
 		}
 	
-		public: // operators
-		
-		// assignment
-		vec_iterator& operator=(const vec_iterator &copie) 
-		{
-			if (this != &copie)
-				_ptr = copie._ptr;
-			return (*this);
-		}
-		
-		// Comparison
-		bool operator== (const vec_iterator& r)  const
-		{  return _ptr == r._ptr;  }
-		bool operator!= (const vec_iterator& r)  const
-		{  return _ptr != r._ptr;  }
-		bool operator<(const vec_iterator& r)  const
-		{  return _ptr < r._ptr;  }
-		bool operator<=(const vec_iterator& r)  const
-		{  return _ptr <= r._ptr;  }
-		bool operator>(const vec_iterator& r)  const
-		{  return _ptr > r._ptr;  }
-		bool operator>=(const vec_iterator& r)  const
-		{  return _ptr >= r._ptr;  }
+		public: // random access iterator requirements
 
-		//	Increment and Decrement
-		vec_iterator& operator++()
-		{ 
-			++_ptr;
-			return *this; 
-		}
-		vec_iterator operator++(int)
-		{  
-			pointer tmp = _ptr; 
-			++*this; 
-			return vec_iterator(tmp);  
-		}
-		vec_iterator& operator--()
-		{  
-			--_ptr; 
-			return *this; 
-	   	}
-		vec_iterator operator--(int)
-		{  
-			pointer tmp = _ptr; 
-			--*this;
-		   	return vec_iterator(tmp); 
-		}
-
-		// Arithmetic operators + and -
-		vec_iterator operator+(int n)
-		{
-			return (vec_iterator(_ptr + n));
-		}
-		vec_iterator operator-(int n)
-		{
-			return (vec_iterator(_ptr - n));
-		}
-		vec_iterator& operator+=(int n)
-		{
-			_ptr += n;
-			return (*this);
-		}
-		vec_iterator& operator-=(int n)
-		{
-			_ptr -= n;
-			return (*this);
-		}
-		difference_type operator-(const vec_iterator& r)
+	 	reference operator[](difference_type n) const
 		{	
-			return (_ptr - r._ptr);
+			return (_current[n]);	
 		}
-
-		// Dereference 
-
-	 	reference operator[](size_t n) const
-		{	return (_ptr[n]);	}
-		reference operator*() const
-		{	return (*_ptr);		}
-		pointer operator->() const
-		{	return (_ptr);		}
-
-		public:
-		virtual ~vec_iterator() {};
-
+		wrap_iterator operator+(difference_type n)
+		{
+			return (wrap_iterator(_current + n));
+		}
+		wrap_iterator operator-(difference_type n)
+		{
+			return (wrap_iterator(_current - n));
+		}
+		wrap_iterator& operator+=(difference_type n)
+		{
+			_current += n;
+			return (*this);
+		}
+		wrap_iterator& operator-=(difference_type n)
+		{
+			_current -= n;
+			return (*this);
+		}
+		const iterator_type& base() const
+		{
+			return (_current);
+		}
 	};
-
+		
+	// forward iterator requirements
+	
+	template < class IteratorL, class IteratorR >
+	bool
+	operator==(const wrap_iterator<IteratorL> &it_l, const wrap_iterator<IteratorR> &it_r)
+	{
+		return (it_l.base() == it_r.base());
+	}
+	
+	template < class Iterator >
+	bool
+	operator==(const wrap_iterator<Iterator> &it_l, const wrap_iterator<Iterator> &it_r)
+	{
+		return (it_l.base() == it_r.base());
+	}
+	
+	template < class IteratorL, class IteratorR >
+	bool
+	operator!=(const wrap_iterator<IteratorL> &it_l, const wrap_iterator<IteratorR> &it_r)
+	{
+		return (it_l.base() != it_r.base());
+	}
+	
+	template < class Iterator >
+	bool
+	operator!=(const wrap_iterator<Iterator> &it_l, const wrap_iterator<Iterator> &it_r)
+	{
+		return (it_l.base() != it_r.base());
+	}
+	
+	// random access iterator requirements
+	
+	template < class IteratorL, class IteratorR >
+	bool
+	operator<=(const wrap_iterator<IteratorL> &it_l, const wrap_iterator<IteratorR> &it_r)
+	{
+		return (it_l.base() <= it_r.base());
+	}
+	
+	template < class Iterator >
+	bool
+	operator<=(const wrap_iterator<Iterator> &it_l, const wrap_iterator<Iterator> &it_r)
+	{
+		return (it_l.base() <= it_r.base());
+	}
+	
+	template < class IteratorL, class IteratorR >
+	bool
+	operator>=(const wrap_iterator<IteratorL> &it_l, const wrap_iterator<IteratorR> &it_r)
+	{
+		return (it_l.base() >= it_r.base());
+	}
+	
+	template < class Iterator >
+	bool
+	operator>=(const wrap_iterator<Iterator> &it_l, const wrap_iterator<Iterator> &it_r)
+	{
+		return (it_l.base() >= it_r.base());
+	}
+	
+	template < class IteratorL, class IteratorR >
+	bool
+	operator<(const wrap_iterator<IteratorL> &it_l, const wrap_iterator<IteratorR> &it_r)
+	{
+		return (it_l.base() < it_r.base());
+	}
+	
+	template < class Iterator >
+	bool
+	operator<(const wrap_iterator<Iterator> &it_l, const wrap_iterator<Iterator> &it_r)
+	{
+		return (it_l.base() < it_r.base());
+	}
+	
+	template < class IteratorL, class IteratorR >
+	bool
+	operator>(const wrap_iterator<IteratorL> &it_l, const wrap_iterator<IteratorR> &it_r)
+	{
+		return (it_l.base() > it_r.base());
+	}
+	
+	template < class Iterator >
+	bool
+	operator>(const wrap_iterator<Iterator> &it_l, const wrap_iterator<Iterator> &it_r)
+	{
+		return (it_l.base() > it_r.base());
+	}
+	
+	template < class Iterator >
+	wrap_iterator<Iterator>
+	operator+(typename wrap_iterator<Iterator>::difference_type n, const wrap_iterator<Iterator> &it)
+	{
+		return (wrap_iterator<Iterator>(it.base() + n));
+	}
+	
+	template < class Iterator>
+	class reverse_iterator
+	{
+		typedef Iterator													iterator_type;
+		typedef typename iterator_traits<iterator_type>::value_type			value_type;
+  		typedef typename iterator_traits<iterator_type>::difference_type	difference_type;
+    	typedef typename iterator_traits<iterator_type>::pointer			pointer;
+    	typedef typename iterator_traits<iterator_type>::reference			reference;
+    	typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
+	};
 }
 
 #endif

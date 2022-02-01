@@ -15,8 +15,8 @@ namespace ft
 		typedef typename allocator_type::const_reference	const_reference;
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer		const_pointer;
-		typedef vec_iterator<pointer>						iterator;
-		typedef vec_iterator<const_pointer>                 const_iterator;
+		typedef wrap_iterator<pointer>						iterator;
+		typedef wrap_iterator<const_pointer>                 const_iterator;
 	//	typedef reverse_iterator<iterator>					reverse_iterator;
 	//	typedef reverse_iterator<const_iterator>			const_reverse_iterator;
 		typedef typename allocator_type::difference_type	difference_type;
@@ -478,7 +478,9 @@ namespace ft
     void
 	vector<T, Allocator>::insert (iterator position, InputIterator first, InputIterator last)
 	{
-		size_t n = last - first;
+		iterator a(first.base());
+		iterator b(last.base());
+		size_t n = b - a;
 		if (_size + n > _capacity)
 		{
 			value_type *tmp;
@@ -542,11 +544,11 @@ namespace ft
 			}
 			while (it != position - 1)
 			{
-				last--;
+				b--;
 				if (it > end)
-					A.construct(it.base(), *last);
+					A.construct(it.base(), *b);
 				else
-					*it = *last;
+					*it = *b;
 				it--;
 			}
 			_size += n;
