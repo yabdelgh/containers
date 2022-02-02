@@ -132,9 +132,9 @@ int main()
 	std::cout << "size: " << vec.size() << std::endl;
 	std::cout << "capacity: " << vec.capacity() << std::endl;
 	it = vec.begin();
-	input_iterator<int*> ia = vec.begin().base();
-	input_iterator<int*> ib = vec.begin().base() + 3;
-	vec.insert(it,ia, ib);
+//	input_iterator<int*> ia = vec.begin().base();
+//	input_iterator<int*> ib = vec.begin().base() + 3;
+	vec.insert(it,it+1, it+2);
 	std::cout << "size: " << vec.size() << std::endl;
 	std::cout << "capacity: " << vec.capacity() << std::endl;
 	it = vec.begin();
