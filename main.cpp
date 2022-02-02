@@ -110,9 +110,9 @@ class A
 
 int main()
 {
-	ft::vector<int> vec;
-	ft::vector<int>::iterator it = vec.begin();
-	ft::vector<int>::iterator ite = vec.end();
+	ft::vector<A> vec;
+	ft::vector<A>::iterator it = vec.begin();
+	ft::vector<A>::iterator ite = vec.end();
 	vec.reserve(10);
 	it = vec.begin();
 	std::cout << "size: " << vec.size() << std::endl;
@@ -141,7 +141,7 @@ int main()
 	ite = vec.end();
 	while (it != ite)
 	{
-		std::cout << *it << std::endl;
+		std::cout << it->b << std::endl;
 		it++;
 	}
 	ft::vector<int>::iterator vv;
