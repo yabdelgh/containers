@@ -2,10 +2,11 @@
 #define __STACK_HPP_
 
 #include "vector.hpp"
+#include <vector>
 
 namespace ft
 {
-	template < class T, class Container = vector<T> >
+	template < class T, class Container = std::vector<T> >
 	class stack
 	{
 		public:
@@ -43,6 +44,11 @@ namespace ft
 		void push (const value_type& val)
 		{
 			return (_c.push_back(val));
+		}
+		
+		void pop()
+		{
+			return (_c.pop_back());
 		}
 	
 		template <class TF, class CF>
