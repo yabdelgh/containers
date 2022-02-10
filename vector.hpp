@@ -1,6 +1,7 @@
 #ifndef __VECTOR_HPP__
 #define __VECTOR_HPP__
-#include <iostream>
+
+#include "algorithm.hpp"
 #include "iterator.hpp"
 
 namespace ft
@@ -32,7 +33,8 @@ namespace ft
 		
 		public:
 		explicit vector (const allocator_type& allocator = allocator_type());
-		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& allocator = allocator_type());
+		explicit vector (size_type n, const value_type& val = value_type(),
+				const allocator_type& allocator = allocator_type());
 		//template <class InputIterator>
 		//vector (InputIterator first, InputIterator last,
 		//		const allocator_type& allocator = allocator_type());
@@ -553,6 +555,49 @@ namespace ft
 			}
 			_size += n;
 		}
+	}
+	
+	template <class T, class Alloc>
+  	bool
+	operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return (false);
+		return (equal(lhs.begin(), lhs.end(), rhs.begin()));
+	}
+	template <class T, class Alloc>
+  	bool
+	operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs == rhs);
+	}
+ 
+	template <class T, class Alloc>
+	bool
+	operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+	
+	template <class T, class Alloc>
+  	bool
+	operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (rhs < lhs);
+	}
+	
+	template <class T, class Alloc>
+  	bool
+	operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return (rhs < lhs);
+	}
+	
+	template <class T, class Alloc>
+  	bool
+	operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs)
+	{
+		return !(lhs < rhs);
 	}
 }
 
