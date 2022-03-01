@@ -1,11 +1,29 @@
 #include <iostream>
 #include "type_traits.hpp"
 
+
+template <class T>
+  void f(T f, typename std::enable_if<std::is_integral<T>::value>::type *pf = nullptr) {
+		  std::cout << f << std::endl;
+		std::cout << pf << std::endl;
+   }
+
+class A
+{
+	public:
+	int i;
+};
+
+std::ostream& operator<<(std::ostream &o, A& ele)
+{
+	o << ele.i;
+	return o;
+}
+
 int main() {
-  std::cout << std::boolalpha;
-  std::cout << "is_integral:" << std::endl;
-  std::cout << "char: " << ft::is_integral<char>::value << std::endl;
-  std::cout << "int: " << ft::is_integral<int>::value << std::endl;
-  std::cout << "float: " << ft::is_integral<float>::value << std::endl;
-  return 0;
+	int j;
+	j = 9;
+	A a;
+   f<A>(a);
+   // f(v); // serait illégal
 }
