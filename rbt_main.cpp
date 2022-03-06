@@ -47,7 +47,7 @@ int main()
 	r.insert_node(b);
 	r.insert_node(c);
 	r.insert_node(d);
-	//r.delete_node(c);
+	r.delete_node(c);
 	print2D(r.base());
 	return (0);
 }

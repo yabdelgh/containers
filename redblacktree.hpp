@@ -81,6 +81,8 @@ namespace ft
 		typedef typename allocator_type::const_reference 	const_reference;
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer 		const_pointer;
+		typedef typename allocator_type::difference_type    difference_type;
+		typedef typename allocator_type::size_type          size_type;
 		typedef node<value_type>*							node_ptr;
 		
 		public:
@@ -102,11 +104,12 @@ namespace ft
 		private:
 		node_ptr		_root;
 		allocator_type	_alloc;
+		size_type		_size;
 		
 
 		public:
-		rbt() : _root(nullptr) {}
-		rbt(const rbt& copy) : _root(copy._root) {}
+		rbt() : _root(nullptr) , _size(0) {}
+		rbt(const rbt& copy) : _root(copy._root) , _size(copy._size) {}
 
 		public:
 		rbt& operator=(const rbt& copy)
@@ -121,6 +124,10 @@ namespace ft
 		void delete_node(const_reference data);
 		void delete_fix(node_ptr node);
 		void replace_node(node_ptr old_node, node_ptr new_node);
+
+		public:
+		size_type size() const;
+		bool empty() const;
 
 		public:
 		node_ptr search(const_reference data);
@@ -143,6 +150,20 @@ namespace ft
 		public:
 		virtual ~rbt() {}
 	};
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::size_type
+	rbt<Key, T, Compare, Alloc>::size() const
+	{
+		return (_size);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	bool
+	rbt<Key, T, Compare, Alloc>::empty() const
+	{
+		return (!_size);
+	}
 
 	template <class Key, class T, class Compare, class Alloc>
 	void
@@ -152,20 +173,29 @@ namespace ft
 		value_compare comp = value_comp();
 
 		if (_root == nullptr)
+		{
 			_root = new node<value_type>(new value_type(data), false);
+			_size++;
+		}
 		tmp = _root;
 		while (comp(*tmp->_data ,data) || comp(data, *tmp->_data))
 		{
 			if (!comp(data ,*tmp->_data))
 			{
 				if (tmp->_right == nullptr)
+				{
 					tmp->_right = new node<value_type>(new value_type(data), true, true, tmp);
+					_size++;
+				}
 				tmp = tmp->_right;
 			}
 			else
 			{
 				if (tmp->_left == nullptr)
+				{
 					tmp->_left = new node<value_type>(new value_type(data), true, false, tmp);
+					_size++;
+				}
 				tmp = tmp->_left;
 			}
 		}
@@ -180,7 +210,10 @@ namespace ft
 		node_ptr tmp;
 		tmp = search(data);
 		if (tmp != nullptr)
+		{
 			delete_node(tmp);
+			_size--;
+		}
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
