@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "utility.hpp"
+#include "functional.hpp"
 namespace ft
 {
 	template < class T >
@@ -81,6 +82,22 @@ namespace ft
 		typedef typename allocator_type::pointer			pointer;
 		typedef typename allocator_type::const_pointer 		const_pointer;
 		typedef node<value_type>*							node_ptr;
+		
+		public:
+		class value_compare: public ft::binary_function<value_type, value_type, bool>
+		{
+		    friend class rbt<Key, T, Compare, Alloc>;
+		    
+		    protected:
+		    Compare comp;
+		    value_compare(Compare c): comp(c) { }
+		    
+		    public:
+		    bool operator()(const_reference x, const_reference y) const 
+		    { 
+		        return comp(x.first, y.first);
+		    }
+		};
 
 		private:
 		node_ptr		_root;
@@ -112,6 +129,17 @@ namespace ft
 			return (_root);
 		}
 
+		
+		value_compare value_comp() const
+		{
+			return value_compare(key_comp());
+		}
+
+		key_compare key_comp() const
+		{
+			return key_compare();
+		}
+
 		public:
 		virtual ~rbt() {}
 	};
@@ -121,13 +149,14 @@ namespace ft
 	rbt<Key, T, Compare, Alloc>::insert_node(const_reference data)
 	{
 		node_ptr tmp;
+		value_compare comp = value_comp();
 
 		if (_root == nullptr)
 			_root = new node<value_type>(new value_type(data), false);
 		tmp = _root;
-		while (*tmp->_data != data)
+		while (comp(*tmp->_data ,data) || comp(data, *tmp->_data))
 		{
-			if (data > *tmp->_data)
+			if (!comp(data ,*tmp->_data))
 			{
 				if (tmp->_right == nullptr)
 					tmp->_right = new node<value_type>(new value_type(data), true, true, tmp);
@@ -273,13 +302,14 @@ namespace ft
 	rbt<Key, T, Compare, Alloc>::search(const_reference data)
 	{
 		node_ptr tmp;
+		value_compare comp = value_comp();
 		
 		tmp = _root;
 		while (tmp != nullptr)
 		{
-			if (data == *(tmp->_data))
+			if (!comp(data, *(tmp->_data)) && !comp(*(tmp->_data), data))
 				return (tmp);
-			else if (data > (*tmp->_data))
+			else if (!comp(data ,*tmp->_data))
 				tmp = tmp->_right;
 			else
 				tmp = tmp->_left;

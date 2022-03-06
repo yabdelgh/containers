@@ -42,13 +42,12 @@ int main()
 	ft::pair<const int,int> b(20,11230);
 	ft::pair<const int,int> c(20,11290);
 	ft::pair<const int,int> d(30,11290);
-	r.insert_node(a);
+	r.insert_node(ft::make_pair(4,34));
+	r.insert_node(ft::make_pair(5,34));
 	r.insert_node(b);
 	r.insert_node(c);
 	r.insert_node(d);
-	r.delete_node(b);
-	r.insert_node(b);
-	r.delete_node(c);
+	//r.delete_node(c);
 	print2D(r.base());
 	return (0);
 }
