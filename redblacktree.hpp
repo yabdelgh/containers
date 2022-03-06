@@ -71,15 +71,20 @@ namespace ft
 	class rbt
 	{
 		public:
-		typedef Key									key_type;
-		typedef Alloc								allocator_type;
-		typedef T									mapped_type;
-		typedef Compare								key_compare;
-		typedef typename allocator_type::value_type	value_type;
+		typedef Key											key_type;
+		typedef Alloc										allocator_type;
+		typedef T											mapped_type;
+		typedef Compare										key_compare;
+		typedef typename allocator_type::value_type			value_type;
+		typedef typename allocator_type::reference 			reference;
+		typedef typename allocator_type::const_reference 	const_reference;
+		typedef typename allocator_type::pointer			pointer;
+		typedef typename allocator_type::const_pointer 		const_pointer;
+		typedef node<value_type>*							node_ptr;
 
 		private:
-		node<value_type> *_root;
-		allocator_type _alloc;
+		node_ptr		_root;
+		allocator_type	_alloc;
 		
 
 		public:
@@ -94,16 +99,15 @@ namespace ft
 		}
 
 		public:
-		void insert(const value_type& data);
-	//	friend void insert(const value_type& data);
-		/*void _delete(node<value_type> *tmp);
-		void _delete(const T& data);
-		node<T> *search(const T& data);
-		void replace(node<value_type> *tmp, node<value_type> *new_node);
-		void delete_fix(node<value_type> *node);*/
+		void insert_node(const_reference data);
+		void delete_node(node_ptr node);
+		void delete_node(const_reference data);
+		void delete_fix(node_ptr node);
+		void replace_node(node_ptr old_node, node_ptr new_node);
 
 		public:
-		node<value_type> *base()
+		node_ptr search(const_reference data);
+		node_ptr base()
 		{
 			return (_root);
 		}
@@ -114,9 +118,9 @@ namespace ft
 
 	template <class Key, class T, class Compare, class Alloc>
 	void
-	rbt<Key, T, Compare, Alloc>::insert(const value_type& data)
+	rbt<Key, T, Compare, Alloc>::insert_node(const_reference data)
 	{
-		node<value_type> *tmp;
+		node_ptr tmp;
 
 		if (_root == nullptr)
 			_root = new node<value_type>(new value_type(data), false);
@@ -139,28 +143,29 @@ namespace ft
 		if (tmp->_parent != nullptr && tmp->_parent->_color == true)
 			balance(_root, tmp);
 	}
-	/*template < class T >
+	
+	template <class Key, class T, class Compare, class Alloc>
 	void
-	rbt<T>::_delete(const T& data)
+	rbt<Key, T, Compare, Alloc>::delete_node(const_reference data)
 	{
-		node<T> *tmp;
+		node_ptr tmp;
 		tmp = search(data);
 		if (tmp != nullptr)
-			_delete(tmp);
+			delete_node(tmp);
 	}
 
-	template < class T >
+	template <class Key, class T, class Compare, class Alloc>
 	void
-	rbt<T>::_delete(node<T> *tmp)
+	rbt<Key, T, Compare, Alloc>::delete_node(node_ptr tmp)
 	{
 		while (tmp->_left != nullptr && tmp->_right != nullptr)
 		{
-			node<T> *s = tmp->successor();
+			node_ptr s = tmp->successor();
 			tmp->_data = s->_data;
 			tmp = s;
 		}
 		if (tmp->_color == true)
-				replace(tmp, nullptr);
+				replace_node(tmp, nullptr);
 		else
 		{
 			if (tmp->_right != nullptr && tmp->_right->_color == true) // if tmp is black and his right child is red
@@ -179,7 +184,7 @@ namespace ft
 			}
 			else
 			{
-				replace(tmp, nullptr);
+				replace_node(tmp, nullptr);
 				if (tmp->_lorr)
 					delete_fix(tmp->_parent->_left);
 				else
@@ -188,23 +193,19 @@ namespace ft
 		}
 	}
 
-	template < class T >
+	template <class Key, class T, class Compare, class Alloc>
 	void
-	rbt<T>::delete_fix(node<T> *node)
+	rbt<Key, T, Compare, Alloc>::delete_fix(node_ptr node)
 	{
 		if (!is_red(node) && !is_red(node->_left) && !is_red(node->_right))
 		{
 			node->_color = true;
 			if (node->_parent == _root || node->_parent->_color == true)
 				node->_parent->_color = false;
+			else if (node->_parent->_lorr)
+				delete_fix(node->_parent->_parent->_left);
 			else
-			{
-				if (node->_parent->_lorr)
-					delete_fix(node->_parent->_parent->_left);
-				else
-					delete_fix(node->_parent->_parent->_right);
-
-			}
+				delete_fix(node->_parent->_parent->_right);
 		}
 		else if ( is_red(node) )
 		{
@@ -254,9 +255,9 @@ namespace ft
 			return (node->_color);
 	}
 	
-	template < class T >
+	template <class Key, class T, class Compare, class Alloc>
 	void
-	rbt<T>::replace(node<value_type> *tmp, node<value_type> *new_node)
+	rbt<Key, T, Compare, Alloc>::replace_node(node_ptr tmp, node_ptr new_node)
 	{
 		if (tmp->_lorr == true)
 			tmp->_parent->_right = new_node;
@@ -267,11 +268,11 @@ namespace ft
 		// free
 	}
 
-	template < class T >
-	node<T>*
-	rbt<T>::search(const T& data)
+	template <class Key, class T, class Compare, class Alloc>
+	node<typename rbt<Key, T, Compare, Alloc>::value_type>*
+	rbt<Key, T, Compare, Alloc>::search(const_reference data)
 	{
-		node<T> *tmp;
+		node_ptr tmp;
 		
 		tmp = _root;
 		while (tmp != nullptr)
@@ -284,7 +285,7 @@ namespace ft
 				tmp = tmp->_left;
 		}
 		return (nullptr);
-	}*/
+	}
 
 	
 /*	template <class T>
