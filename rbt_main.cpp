@@ -42,12 +42,40 @@ int main()
 	ft::pair<const int,int> b(20,11230);
 	ft::pair<const int,int> c(20,11290);
 	ft::pair<const int,int> d(30,11290);
+	r.insert_node(ft::make_pair(46450,34));
 	r.insert_node(ft::make_pair(4,34));
-	r.insert_node(ft::make_pair(5,34));
-	r.insert_node(b);
+	r.insert_node(ft::make_pair(888,34));
+	r.insert_node(ft::make_pair(85,34));
+	r.insert_node(ft::make_pair(-8,34));
+	r.insert_node(ft::make_pair(-48,34));
+	r.insert_node(ft::make_pair(9,34));
+	r.insert_node(ft::make_pair(55,34));
+	r.insert_node(ft::make_pair(564,34));
+	r.insert_node(ft::make_pair(34,34));
+	r.insert_node(ft::make_pair(9787,34));
+	r.insert_node(ft::make_pair(567,34));
+	r.insert_node(ft::make_pair(987,34));
+	r.insert_node(ft::make_pair(21,34));
+	r.insert_node(ft::make_pair(434,34));
+	r.insert_node(ft::make_pair(46451,34));
+	r.insert_node(ft::make_pair(46452,34));
+	r.insert_node(ft::make_pair(48888,34));
+	r.insert_node(ft::make_pair(433,34));
+	r.insert_node(ft::make_pair(224,34));
+	r.insert_node(ft::make_pair(411,34));
+	r.insert_node(ft::make_pair(6625,34));
+	r.insert_node(ft::make_pair(46449,34));
 	r.insert_node(c);
 	r.insert_node(d);
-	r.delete_node(c);
-	print2D(r.base());
+//	print2D(r.base());
+//	r.display();
+	std::cout << std::endl;
+	ft::rbt<int,int>::iterator it = r.begin();
+	ft::rbt<int,int>::iterator ite = r.end();
+	while (it != ite)
+	{
+		std::cout << it->first << "   " << it->second << std::endl;
+		++it;
+	}
 	return (0);
 }

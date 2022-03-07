@@ -4,6 +4,7 @@
 #include <iostream>
 #include "utility.hpp"
 #include "functional.hpp"
+#include "iterator.hpp"
 namespace ft
 {
 	template < class T >
@@ -52,7 +53,39 @@ namespace ft
 				tmp = tmp->_left;
 			return (tmp);
 		}
+
+		node *in_order_successor()
+		{
+			if (_right != nullptr)
+				return(successor());
+			else
+			{
+				node *tmp;
+				tmp = this;
+				while (tmp != nullptr && tmp->_lorr == true)
+					tmp = tmp->_parent;
+				if (tmp != nullptr)
+					return (tmp->_parent);
+			}
+			return (nullptr);
+		}
 		
+		node *in_order_predecessor()
+		{
+			if (_left != nullptr)
+				return(predecessor());
+			else
+			{
+				node *tmp;
+				tmp = this;
+				while (tmp != nullptr && tmp->_lorr == false)
+					tmp = tmp->_parent;
+				if (tmp != nullptr)
+					return (tmp->_parent);
+			}
+			return (nullptr);
+		}
+
 		node *predecessor()
 		{
 			node *tmp;
@@ -66,15 +99,82 @@ namespace ft
 		virtual ~node() {}
 
 	};
+	
+	template <class T>
+	class rbt_iterator
+	{
+		public:
+		typedef typename iterator_traits<T>::value_type         value_type;
+		typedef typename iterator_traits<T>::difference_type    difference_type;
+		typedef typename iterator_traits<T>::pointer            pointer;
+		typedef typename iterator_traits<T>::reference          reference;
+		typedef typename ft::bidirectional_iterator_tag				iterator_category;
+		typedef node<value_type>*								node_ptr;
+		typedef node<value_type>&								node_ref;
+
+		protected:
+		node_ptr _current;
+		
+		public:
+		rbt_iterator(node_ref x): _current(x) {}
+		rbt_iterator(node_ptr x): _current(x) {}
+
+		public:
+		reference operator* () const
+		{
+			return (*_current->_data);
+		}
+		
+		pointer operator-> () const
+		{
+			return (_current->_data);
+		}
+		
+		rbt_iterator<T>& operator++()
+		{
+			_current = _current->in_order_successor();
+			return (*this);
+		}
+		
+		rbt_iterator<T> operator++(int)
+		{
+			rbt_iterator<T> tmp(_current);
+			_current = _current->in_order_successor();
+			return (tmp);
+		}
+		
+		rbt_iterator<T>& operator--()
+		{
+			_current = _current->in_order_predecessor();
+			return (*this);
+		}
+		
+		rbt_iterator<T> operator--(int)
+		{
+			rbt_iterator<T> tmp(_current);
+			_current = _current->in_order_predecessor();
+			return (tmp);
+		}
+
+		bool operator==(rbt_iterator<T> & x) const
+		{
+			return (_current == x._current);
+		}
+		
+		bool operator!=(rbt_iterator<T> & x) const
+		{
+			return (_current != x._current);
+		}
+	};
 
 
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class rbt
 	{
 		public:
+		typedef T											mapped_type;
 		typedef Key											key_type;
 		typedef Alloc										allocator_type;
-		typedef T											mapped_type;
 		typedef Compare										key_compare;
 		typedef typename allocator_type::value_type			value_type;
 		typedef typename allocator_type::reference 			reference;
@@ -83,6 +183,8 @@ namespace ft
 		typedef typename allocator_type::const_pointer 		const_pointer;
 		typedef typename allocator_type::difference_type    difference_type;
 		typedef typename allocator_type::size_type          size_type;
+		typedef typename ft::rbt_iterator<pointer>			iterator;
+		typedef typename ft::rbt_iterator<const_pointer>	const_iterator;
 		typedef node<value_type>*							node_ptr;
 		
 		public:
@@ -106,6 +208,20 @@ namespace ft
 		allocator_type	_alloc;
 		size_type		_size;
 		
+		public:
+		iterator begin()
+		{
+			node<value_type> *tmp;
+			tmp = _root;
+			while(tmp->_left != nullptr)
+				tmp = tmp->_left;
+			return iterator(tmp);
+		}
+		
+		iterator end()
+		{
+			return (iterator(nullptr));
+		}
 
 		public:
 		rbt() : _root(nullptr) , _size(0) {}
@@ -127,7 +243,13 @@ namespace ft
 
 		public:
 		size_type size() const;
+		size_type max_size() const;
 		bool empty() const;
+		void swap (rbt& x);
+		void clear();
+		void display();
+
+		public:
 
 		public:
 		node_ptr search(const_reference data);
@@ -146,10 +268,32 @@ namespace ft
 		{
 			return key_compare();
 		}
+		
+		allocator_type get_allocator() const
+		{
+			return allocator_type();
+		}
+
 
 		public:
 		virtual ~rbt() {}
 	};
+
+	
+	template <class Key, class T, class Compare, class Alloc>
+	void
+	rbt<Key, T, Compare, Alloc>::display ()
+	{
+		node<value_type> *tmp;
+		tmp = _root;
+		while(tmp->_right != nullptr)
+			tmp = tmp->_right;
+		while (tmp != nullptr)
+		{
+			std::cout << tmp->_data->first << std::endl;
+			tmp = tmp->in_order_predecessor();
+		}
+	}
 	
 	template <class Key, class T, class Compare, class Alloc>
 	typename rbt<Key, T, Compare, Alloc>::size_type
@@ -163,6 +307,37 @@ namespace ft
 	rbt<Key, T, Compare, Alloc>::empty() const
 	{
 		return (!_size);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	void
+	rbt<Key, T, Compare, Alloc>::swap (rbt& x)
+	{
+		node_ptr tmp_root;
+		size_type tmp_size;
+
+		tmp_root = _root;
+		tmp_size = _size;
+		_root = x._root;
+		_size = x._size;
+		x._root = tmp_root;
+		x._size = tmp_size;
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::size_type
+	rbt<Key, T, Compare, Alloc>::max_size() const
+	{
+		return (_alloc.max_size);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	void
+	rbt<Key, T, Compare, Alloc>::clear()
+	{
+		_size = 0;
+		while(_root)
+			delete_node(_root); // no performance
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
@@ -220,6 +395,12 @@ namespace ft
 	void
 	rbt<Key, T, Compare, Alloc>::delete_node(node_ptr tmp)
 	{
+		if (tmp == _root && tmp->_left == nullptr && tmp->_right == nullptr)
+		{
+			//free
+			_root = nullptr;
+			return ;
+		}
 		while (tmp->_left != nullptr && tmp->_right != nullptr)
 		{
 			node_ptr s = tmp->successor();
@@ -433,6 +614,7 @@ namespace ft
 		tmp._right->_lorr = false;
 		tmp._right->_data = tmp._data;
 	}
+
 }
 
 
