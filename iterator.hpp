@@ -246,7 +246,7 @@ namespace ft
 	
 		public:
 		reverse_iterator() : _current() {}
-		explicit reverse_iterator(iterator_type it) : _current(it) {}
+		explicit reverse_iterator(const iterator_type &it) : _current(it) {}
 		template <class Iter>
 		reverse_iterator(const reverse_iterator<Iter>& rev_it) : _current(rev_it.base()) {}
 
@@ -256,7 +256,7 @@ namespace ft
 			return (_current);
 		}
 		
-		reference operator*()
+		reference operator*() const
 		{
 			iterator_type copy(_current);
 			--copy;
