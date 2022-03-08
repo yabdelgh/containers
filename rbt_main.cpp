@@ -2,6 +2,7 @@
 #include "redblacktree.hpp"
 #include "utility.hpp"
 #define COUNT 15
+#include <utility>
 template <typename node_ptr>
 void printUtils(node_ptr root, int space, int depth, int &size)
 {
@@ -22,7 +23,6 @@ void printUtils(node_ptr root, int space, int depth, int &size)
 	size++;
 	printUtils(static_cast<node_ptr>(root->_left), space, depth + 1, size);
 }
-
 template <typename node_ptr>
 void print2D(node_ptr *root)
 {
@@ -37,11 +37,12 @@ void print2D(node_ptr *root)
 
 int main()
 {
+using namespace std::rel_ops;
 	ft::rbt<int,int> r;
-	ft::pair<const int,int> a(10,10);
-	ft::pair<const int,int> b(20,11230);
-	ft::pair<const int,int> c(20,11290);
-	ft::pair<const int,int> d(30,11290);
+	ft::pair<int,int> a(10,10);
+	ft::pair<int,int> b(20,11230);
+	ft::pair<int,int> c(20,11290);
+	ft::pair<int,int> d(30,11290);
 	r.insert_node(ft::make_pair(46450,34));
 	r.insert_node(ft::make_pair(4,34));
 	r.insert_node(ft::make_pair(888,34));
@@ -69,13 +70,29 @@ int main()
 	r.insert_node(d);
 //	print2D(r.base());
 //	r.display();
-	std::cout << std::endl;
+//	std::cout << std::endl;
+//	ft::rbt<int,int>::const_iterator it = r.begin();
+//	ft::rbt<int,int>::const_iterator ite = r.end();
 	ft::rbt<int,int>::iterator it = r.begin();
 	ft::rbt<int,int>::iterator ite = r.end();
+//	it->second = 99999999;
 	while (it != ite)
 	{
 		std::cout << it->first << "   " << it->second << std::endl;
 		++it;
 	}
+	std::cout << std::endl;	
+	ft::rbt<int,int>::reverse_iterator rit = r.rbegin();
+	ft::rbt<int,int>::reverse_iterator rite = r.rend();
+//	it->second = 99999999;
+	while (rit != rite)
+	{
+		std::cout << rit->first << "   " << rit->second << std::endl;
+		++rit;
+	}
+
+	
+//	ft::rbt<int,int>::reverse_iterator rit;
+	//std::cout << rit->first << std::endl;
 	return (0);
 }

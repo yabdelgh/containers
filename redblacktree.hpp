@@ -108,17 +108,18 @@ namespace ft
 		typedef typename iterator_traits<T>::difference_type    difference_type;
 		typedef typename iterator_traits<T>::pointer            pointer;
 		typedef typename iterator_traits<T>::reference          reference;
-		typedef typename ft::bidirectional_iterator_tag				iterator_category;
+		typedef typename ft::bidirectional_iterator_tag			iterator_category;
 		typedef node<value_type>*								node_ptr;
-		typedef node<value_type>&								node_ref;
 
-		protected:
+		private:
 		node_ptr _current;
 		
 		public:
-		rbt_iterator(node_ref x): _current(x) {}
-		rbt_iterator(node_ptr x): _current(x) {}
-
+		rbt_iterator(): _current() {}
+		rbt_iterator(node_ptr copy) : _current(copy) {}
+		rbt_iterator(const rbt_iterator<value_type *> &copy): _current(copy.base()) {}
+		rbt_iterator(const rbt_iterator< const value_type *> &copy): _current(copy.base()) {}
+  
 		public:
 		reference operator* () const
 		{
@@ -156,36 +157,62 @@ namespace ft
 			return (tmp);
 		}
 
-		bool operator==(rbt_iterator<T> & x) const
+		node_ptr base() const
 		{
-			return (_current == x._current);
-		}
-		
-		bool operator!=(rbt_iterator<T> & x) const
-		{
-			return (_current != x._current);
+			return (_current);
 		}
 	};
-
+	
+	template <class T, class F>
+	bool
+	operator==(const rbt_iterator<T> & x, const rbt_iterator<F> & y)
+	{
+		return (y.base() == x.base());
+	}
+	
+	template <class T, class F>
+	bool
+	operator!=(const rbt_iterator<T> & x, const rbt_iterator<F> & y)
+	{
+		return (y.base() != x.base());
+	}
+	
+	template <class T>
+	bool
+	operator==(const rbt_iterator<T> & x, const rbt_iterator<T> & y)
+	{
+		return (y.base() == x.base());
+	}
+	
+	template <class T>
+	bool
+	operator!=(const rbt_iterator<T> & x, const rbt_iterator<T> & y)
+	{
+		return (y.base() != x.base());
+	}
+	
+	
 
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< ft::pair<const Key, T> > >
 	class rbt
 	{
 		public:
-		typedef T											mapped_type;
-		typedef Key											key_type;
-		typedef Alloc										allocator_type;
-		typedef Compare										key_compare;
-		typedef typename allocator_type::value_type			value_type;
-		typedef typename allocator_type::reference 			reference;
-		typedef typename allocator_type::const_reference 	const_reference;
-		typedef typename allocator_type::pointer			pointer;
-		typedef typename allocator_type::const_pointer 		const_pointer;
-		typedef typename allocator_type::difference_type    difference_type;
-		typedef typename allocator_type::size_type          size_type;
-		typedef typename ft::rbt_iterator<pointer>			iterator;
-		typedef typename ft::rbt_iterator<const_pointer>	const_iterator;
-		typedef node<value_type>*							node_ptr;
+		typedef T												mapped_type;
+		typedef Key												key_type;
+		typedef Alloc											allocator_type;
+		typedef Compare											key_compare;
+		typedef typename allocator_type::value_type				value_type;
+		typedef typename allocator_type::reference 				reference;
+		typedef typename allocator_type::const_reference		const_reference;
+		typedef typename allocator_type::pointer				pointer;
+		typedef typename allocator_type::const_pointer 			const_pointer;
+		typedef typename allocator_type::difference_type		difference_type;
+		typedef typename allocator_type::size_type      		size_type;
+		typedef typename ft::rbt_iterator<pointer>				iterator;
+		typedef typename ft::rbt_iterator<const_pointer>		const_iterator;
+		typedef typename ft::reverse_iterator<iterator>			reverse_iterator;
+		typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef node<value_type>*								node_ptr;
 		
 		public:
 		class value_compare: public ft::binary_function<value_type, value_type, bool>
@@ -204,9 +231,10 @@ namespace ft
 		};
 
 		private:
-		node_ptr		_root;
-		allocator_type	_alloc;
-		size_type		_size;
+		node_ptr			_root;
+		allocator_type		_alloc;
+		size_type			_size;
+		node<value_type>	_end;
 		
 		public:
 		iterator begin()
@@ -218,9 +246,43 @@ namespace ft
 			return iterator(tmp);
 		}
 		
+		const_iterator begin() const
+		{
+			node<value_type> *tmp;
+			tmp = _root;
+			while(tmp->_left != nullptr)
+				tmp = tmp->_left;
+			return const_iterator(tmp);
+		}
+		
 		iterator end()
 		{
-			return (iterator(nullptr));
+			return iterator(nullptr);
+		}
+		
+		const_iterator end() const
+		{
+			return const_iterator(nullptr);
+		}
+
+		reverse_iterator rbegin()
+		{
+			return reverse_iterator(&_end);
+		}
+		
+		const_reverse_iterator rbegin() const
+		{
+			return const_reverse_iterator(&_end);
+		}
+		
+		reverse_iterator rend()
+		{
+			return reverse_iterator(begin());
+		}
+		
+		const_reverse_iterator rend() const
+		{
+			return const_reverse_iterator(begin());
 		}
 
 		public:
@@ -350,6 +412,7 @@ namespace ft
 		if (_root == nullptr)
 		{
 			_root = new node<value_type>(new value_type(data), false);
+			_end._left = _root;
 			_size++;
 		}
 		tmp = _root;
