@@ -229,134 +229,334 @@ namespace ft
 		        return comp(x.first, y.first);
 		    }
 		};
+		
+		public:
+		explicit rbt (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+		: _root(nullptr), _comp(comp), _alloc(alloc), _size(0)	{}
+		template <class InputIterator>
+ 		rbt (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+		: _root(nullptr), _comp(comp), _alloc(alloc), _size(0)
+		{
+			while (first != last)
+			{
+				insert_node(*first);
+				first++;
+			}
+		}
+		rbt(const rbt& copy) : _root(nullptr), _size(0), _end(nullptr) 
+		{
+			iterator it = copy.begin();
+			iterator ite = copy.end();
+			while (it != ite)
+			{
+				insert_node(*it);
+				it++;
+			}
+		}
 
 		private:
 		node_ptr			_root;
+		Compare				_comp;
 		allocator_type		_alloc;
 		size_type			_size;
 		node<value_type>	_end;
 		
-		public:
-		iterator begin()
-		{
-			node<value_type> *tmp;
-			tmp = _root;
-			while(tmp->_left != nullptr)
-				tmp = tmp->_left;
-			return iterator(tmp);
-		}
-		
-		const_iterator begin() const
-		{
-			node<value_type> *tmp;
-			tmp = _root;
-			while(tmp->_left != nullptr)
-				tmp = tmp->_left;
-			return const_iterator(tmp);
-		}
-		
-		iterator end()
-		{
-			return iterator(nullptr);
-		}
-		
-		const_iterator end() const
-		{
-			return const_iterator(nullptr);
-		}
+		/******************   Iterators    *************/
+		public:	
+		iterator begin();
+		const_iterator begin() const;
+		iterator end();
+		const_iterator end() const;
+		reverse_iterator rbegin();
+		const_reverse_iterator rbegin() const;
+		reverse_iterator rend();
+		const_reverse_iterator rend() const;
 
-		reverse_iterator rbegin()
-		{
-			return reverse_iterator(&_end);
-		}
-		
-		const_reverse_iterator rbegin() const
-		{
-			return const_reverse_iterator(&_end);
-		}
-		
-		reverse_iterator rend()
-		{
-			return reverse_iterator(begin());
-		}
-		
-		const_reverse_iterator rend() const
-		{
-			return const_reverse_iterator(begin());
-		}
-
+		/******************   Utility    *************/	
 		public:
-		rbt() : _root(nullptr) , _size(0) {}
-		rbt(const rbt& copy) : _root(copy._root) , _size(copy._size) {}
-
-		public:
-		rbt& operator=(const rbt& copy)
-		{
-			_root = copy._root;
-			return (*this);
-		}
-
-		public:
+		node_ptr search(const_reference data);
 		void insert_node(const_reference data);
 		void delete_node(node_ptr node);
 		void delete_node(const_reference data);
 		void delete_fix(node_ptr node);
 		void replace_node(node_ptr old_node, node_ptr new_node);
 
+		/******************   Capacity     *************/	
 		public:
 		size_type size() const;
 		size_type max_size() const;
 		bool empty() const;
+
+
+		/******************   Modifiers     *************/
+		public:	
+		pair<iterator,bool> insert (const value_type& val);
+		iterator insert (iterator position, const value_type& val);
+		template <class InputIterator>
+		void insert (InputIterator first, InputIterator last);
 		void swap (rbt& x);
 		void clear();
-		void display();
 
+		/******************    Observers     *************/	
 		public:
+		value_compare value_comp() const;
+		key_compare key_comp() const;
 
+		/************   Operations  *************/
+	 	iterator find (const key_type& k);
+		const_iterator find (const key_type& k) const;
+		size_type count (const key_type& k) const;
+		iterator lower_bound (const key_type& k);
+		const_iterator lower_bound (const key_type& k) const;
+		iterator upper_bound (const key_type& k);
+		const_iterator upper_bound (const key_type& k) const;
+		ft::pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
+		pair<iterator,iterator>             	equal_range (const key_type& k);
+	
+		/************   Allocator and base  *************/
 		public:
-		node_ptr search(const_reference data);
-		node_ptr base()
-		{
-			return (_root);
-		}
-
-		
-		value_compare value_comp() const
-		{
-			return value_compare(key_comp());
-		}
-
-		key_compare key_comp() const
-		{
-			return key_compare();
-		}
-		
-		allocator_type get_allocator() const
-		{
-			return allocator_type();
-		}
-
+		allocator_type get_allocator() const;
+		node_ptr base() const;
 
 		public:
 		virtual ~rbt() {}
 	};
 
+	/************   Operations  ****************************/
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::iterator
+	rbt<Key, T, Compare, Alloc>::find (const key_type& k)
+	{
+		node_ptr tmp;
+		key_compare comp = key_comp();
+		
+		tmp = _root;
+		while (tmp != nullptr)
+		{
+			if (!comp(k, (tmp->_data->first)) && !comp((tmp->_data->first), k))
+				return iterator(tmp);
+			else if (!comp(k ,tmp->_data->first))
+				tmp = tmp->_right;
+			else
+				tmp = tmp->_left;
+		}
+		return (iterator(end()));
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::const_iterator
+	rbt<Key, T, Compare, Alloc>::find (const key_type& k) const
+	{
+		node_ptr tmp;
+		key_compare comp = key_comp();
+		
+		tmp = _root;
+		while (tmp != nullptr)
+		{
+			if (!comp(k, (tmp->_data->first)) && !comp((tmp->_data->first), k))
+				return const_iterator(tmp);
+			else if (!comp(k ,tmp->_data->first))
+				tmp = tmp->_right;
+			else
+				tmp = tmp->_left;
+		}
+		return (const_iterator(end()));
+
+	}
 	
 	template <class Key, class T, class Compare, class Alloc>
-	void
-	rbt<Key, T, Compare, Alloc>::display ()
+	typename rbt<Key, T, Compare, Alloc>::size_type
+	rbt<Key, T, Compare, Alloc>::count (const key_type& k) const
+	{
+		if (find(k) != end())
+			return (1);
+		return (0);
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::iterator
+	rbt<Key, T, Compare, Alloc>::lower_bound (const key_type& k)
+	{
+		key_compare comp = key_comp();
+		iterator it = begin();
+		iterator ite = end();
+		while (it != ite)
+		{
+			if(!comp(it->first, k))
+				return it;
+			++it;
+		}
+		if (it == ite)
+			return (iterator(&_end));
+		return it;
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::const_iterator
+	rbt<Key, T, Compare, Alloc>::lower_bound (const key_type& k) const
+	{
+		key_compare comp = key_comp();
+		const_iterator it = begin();
+		const_iterator ite = end();
+		while (it != ite)
+		{
+			if(!comp(it->first, k))
+				return it;
+			++it;
+		}
+		if (it == ite)
+			return (const_iterator(&_end));
+		return it;
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::iterator
+	rbt<Key, T, Compare, Alloc>::upper_bound (const key_type& k)
+	{
+		key_compare comp = key_comp();
+		iterator it = begin();
+		iterator ite = end();
+		while (it != ite)
+		{
+			if(!comp(it->first, k))
+				break ;
+			++it;
+		}
+		if (it == ite || ++it == ite)
+			return (iterator(&_end));
+		return it;
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::const_iterator
+	rbt<Key, T, Compare, Alloc>::upper_bound (const key_type& k) const
+	{
+		key_compare comp = key_comp();
+		const_iterator it = begin();
+		const_iterator ite = end();
+		while (it != ite)
+		{
+			if(!comp(it->first, k))
+				break ;
+			++it;
+		}
+		if (it == ite || ++it == ite)
+			return (const_iterator(&_end));
+		return it;
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	ft::pair<typename rbt<Key, T, Compare, Alloc>::const_iterator,typename rbt<Key, T, Compare, Alloc>::const_iterator >
+	rbt<Key, T, Compare, Alloc>::equal_range (const key_type& k) const
+	{
+		return ft::make_pair(lower_bound(k), upper_bound(k));
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	ft::pair<typename rbt<Key, T, Compare, Alloc>::iterator,typename rbt<Key, T, Compare, Alloc>::iterator >
+	rbt<Key, T, Compare, Alloc>::equal_range (const key_type& k)
+	{
+		return ft::make_pair(lower_bound(k), upper_bound(k));
+	}
+
+	/******************   Iterators    *************/	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::iterator
+	rbt<Key, T, Compare, Alloc>::begin()
 	{
 		node<value_type> *tmp;
 		tmp = _root;
-		while(tmp->_right != nullptr)
-			tmp = tmp->_right;
-		while (tmp != nullptr)
-		{
-			std::cout << tmp->_data->first << std::endl;
-			tmp = tmp->in_order_predecessor();
-		}
+		while(tmp->_left != nullptr)
+			tmp = tmp->_left;
+		return iterator(tmp);
 	}
 	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::const_iterator
+	rbt<Key, T, Compare, Alloc>::begin() const
+	{
+		node<value_type> *tmp;
+		tmp = _root;
+		while(tmp->_left != nullptr)
+			tmp = tmp->_left;
+		return const_iterator(tmp);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::iterator
+	rbt<Key, T, Compare, Alloc>::end()
+	{
+		return iterator(nullptr);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::const_iterator
+	rbt<Key, T, Compare, Alloc>::end() const
+	{
+		return const_iterator(nullptr);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::reverse_iterator
+	rbt<Key, T, Compare, Alloc>::rbegin()
+	{
+		return reverse_iterator(&_end);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::const_reverse_iterator
+	rbt<Key, T, Compare, Alloc>::rbegin() const
+	{
+		return const_reverse_iterator(&_end);
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::reverse_iterator
+	rbt<Key, T, Compare, Alloc>::rend()
+	{
+		return reverse_iterator(begin());
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::const_reverse_iterator
+	rbt<Key, T, Compare, Alloc>::rend() const
+	{
+		return const_reverse_iterator(begin());
+	}
+	
+
+	
+	/*****************   Allocator & Base  ************/
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::allocator_type
+	rbt<Key, T, Compare, Alloc>::get_allocator() const
+	{
+		return allocator_type();
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::node_ptr
+	rbt<Key, T, Compare, Alloc>::base() const
+	{
+		return (_root);
+	}
+
+	/******************    Observers     *******************/	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::key_compare
+	rbt<Key, T, Compare, Alloc>::key_comp() const
+	{
+		return _comp;
+	}
+
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::value_compare
+	rbt<Key, T, Compare, Alloc>::value_comp() const
+	{
+		return value_compare(key_comp());
+	}
+	
+	/******************   Capacity     **********************/	
 	template <class Key, class T, class Compare, class Alloc>
 	typename rbt<Key, T, Compare, Alloc>::size_type
 	rbt<Key, T, Compare, Alloc>::size() const
@@ -371,6 +571,42 @@ namespace ft
 		return (!_size);
 	}
 	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::size_type
+	rbt<Key, T, Compare, Alloc>::max_size() const
+	{
+		return (_alloc.max_size);
+	}
+	
+	/******************   Modifiers     ********************/
+	template <class Key, class T, class Compare, class Alloc>
+	ft::pair<typename rbt<Key, T, Compare, Alloc>::iterator,bool>
+	rbt<Key, T, Compare, Alloc>::insert(const value_type& val)
+	{
+		insert_node(val);
+		return ft::make_pair(begin(),true); // ter9i3a
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	typename rbt<Key, T, Compare, Alloc>::iterator
+	rbt<Key, T, Compare, Alloc>::insert (iterator position, const value_type& val)
+	{
+		insert_node(val);
+		return (begin()); // ter9i3a
+	}
+	
+	template <class Key, class T, class Compare, class Alloc>
+	template <class InputIterator>
+	void
+	rbt<Key, T, Compare, Alloc>::insert (InputIterator first, InputIterator last)
+	{
+		while (first != last)
+		{
+			insert_node(*first);
+			first++;
+		}
+	}
+
 	template <class Key, class T, class Compare, class Alloc>
 	void
 	rbt<Key, T, Compare, Alloc>::swap (rbt& x)
@@ -387,13 +623,6 @@ namespace ft
 	}
 	
 	template <class Key, class T, class Compare, class Alloc>
-	typename rbt<Key, T, Compare, Alloc>::size_type
-	rbt<Key, T, Compare, Alloc>::max_size() const
-	{
-		return (_alloc.max_size);
-	}
-	
-	template <class Key, class T, class Compare, class Alloc>
 	void
 	rbt<Key, T, Compare, Alloc>::clear()
 	{
@@ -402,6 +631,7 @@ namespace ft
 			delete_node(_root); // no performance
 	}
 
+	/********************   Utility     ********************/
 	template <class Key, class T, class Compare, class Alloc>
 	void
 	rbt<Key, T, Compare, Alloc>::insert_node(const_reference data)
@@ -413,6 +643,7 @@ namespace ft
 		{
 			_root = new node<value_type>(new value_type(data), false);
 			_end._left = _root;
+			_end._data = _root->_data;
 			_size++;
 		}
 		tmp = _root;
@@ -593,16 +824,6 @@ namespace ft
 		}
 		return (nullptr);
 	}
-
-	
-/*	template <class T>
-	node<T>*
-	rbt<>create_node(const T& data)
-	{
-		node<T>* _node;
-		node<T>* _data;
-		
-	}*/
 	
 	template <class T>
 	void balance(node<T> *_root, node<T> *tmp)
@@ -677,8 +898,5 @@ namespace ft
 		tmp._right->_lorr = false;
 		tmp._right->_data = tmp._data;
 	}
-
 }
-
-
 #endif
