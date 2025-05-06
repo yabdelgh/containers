@@ -6,14 +6,12 @@
 #include <algorithm>
 #include <cstddef>
 #include "iterator.hpp"
-
 namespace ft
 {
     template <class T, class Alloc = std::allocator<T> >
     class vector
     {
     public:
-        // Type definitions
         typedef T                                        value_type;
         typedef Alloc                                    allocator_type;
         typedef typename allocator_type::reference       reference;
@@ -699,10 +697,10 @@ namespace ft
         
         void swap(vector &x)
         {
-            std::swap(_start, x._start);
-            std::swap(_finish, x._finish);
-            std::swap(_end_of_storage, x._end_of_storage);
-            std::swap(_alloc, x._alloc);
+            ft::swap(_start, x._start);
+            ft::swap(_finish, x._finish);
+            ft::swap(_end_of_storage, x._end_of_storage);
+            ft::swap(_alloc, x._alloc);
         }
         
         void clear()
@@ -719,54 +717,3 @@ namespace ft
 }
 
 #endif // VECTOR_HPP
-    
-    
-    
-    
-    
-    
-    // // Non-member function overloads
-    // template <class T, class Alloc>
-    // bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-    // {
-    //     if (lhs.size() != rhs.size())
-    //         return false;
-        
-    //     return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
-    // }
-    
-    // template <class T, class Alloc>
-    // bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-    // {
-    //     return !(lhs == rhs);
-    // }
-    
-    // template <class T, class Alloc>
-    // bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-    // {
-    //     return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-    // }
-    
-    // template <class T, class Alloc>
-    // bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-    // {
-    //     return !(rhs < lhs);
-    // }
-    
-    // template <class T, class Alloc>
-    // bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-    // {
-    //     return rhs < lhs;
-    // }
-    
-    // template <class T, class Alloc>
-    // bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
-    // {
-    //     return !(lhs < rhs);
-    // }
-    
-    // template <class T, class Alloc>
-    // void swap(vector<T, Alloc> &x, vector<T, Alloc> &y)
-    // {
-    //     x.swap(y);
-    // }
