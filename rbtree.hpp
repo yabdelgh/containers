@@ -922,6 +922,80 @@ namespace ft
         }
 
         key_compare key_comp() const { return _comp; }
+
+        // multimap
+        public:
+        
+        iterator insert_multi(const value_type& value)
+        {
+            node_pointer parent = _nil;
+            node_pointer current = _root;
+
+            // Find insertion position (allows duplicates)
+            while (current != _nil)
+            {
+                parent = current;
+                current = _comp(KeyOfValue()(value), KeyOfValue()(current->value)) ? 
+                         current->left : current->right;
+            }
+
+            node_pointer new_node = _node_alloc.allocate(1);
+            _node_alloc.construct(new_node, value);
+
+            new_node->parent = parent;
+            new_node->left = _nil;
+            new_node->right = _nil;
+            new_node->color = RED;
+
+            if (parent == _nil)
+                _root = new_node;
+            else if (_comp(KeyOfValue()(value), KeyOfValue()(parent->value)))
+                parent->left = new_node;
+            else
+                parent->right = new_node;
+
+            _insert_fixup(new_node);
+            ++_size;
+
+            return iterator(new_node, this);
+        }
+
+        iterator insert_multi(iterator hint, const value_type& value)
+        {
+            (void)hint; // Hint optimization can be added later
+            return insert_multi(value);
+        }
+
+        size_type erase_multi(const key_type& k)
+        {
+            size_type count = 0;
+            iterator first = lower_bound(k);
+            iterator last = upper_bound(k);
+
+            while (first != last)
+            {
+                iterator tmp = first++;
+                erase(tmp);
+                ++count;
+            }
+
+            return count;
+        }
+
+        size_type count_multi(const key_type& k) const
+        {
+            size_type count = 0;
+            const_iterator first = lower_bound(k);
+            const_iterator last = upper_bound(k);
+
+            while (first != last)
+            {
+                ++first;
+                ++count;
+            }
+
+            return count;
+        }
     };
 }
 #endif
